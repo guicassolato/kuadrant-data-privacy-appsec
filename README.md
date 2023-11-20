@@ -94,7 +94,7 @@ Additionally, the company also wants to seize this opportunity of reviewing thei
 
 ### Architecture
 
-![Architecture](data-privacy-and-app-sec.jpg)
+![Architecture](images/data-privacy-and-app-sec.jpg)
 
 <br/>
 
