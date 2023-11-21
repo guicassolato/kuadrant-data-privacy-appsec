@@ -387,7 +387,7 @@ spec:
     authentication:
       "keycloak-us":
         jwt:
-          issuerUrl: https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant
+          issuerUrl: http://keycloak.keycloak.svc.cluster.local:8080/realms/kuadrant
     response:
       success:
         headers:
@@ -553,7 +553,7 @@ export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant
 ```
 
 ```sh
-curl -k -H "Authorization: Bearer $ACCESS_TOKEN" https://echo.$MGC_ZONE_ROOT_DOMAIN -i
+curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN -H "Authorization: Bearer $ACCESS_TOKEN" -i
 # HTTP/2 200
 #
 # […]
@@ -691,7 +691,7 @@ spec:
     authentication:
       "keycloak-eu":
         jwt:
-          issuerUrl: https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant
+          issuerUrl: http://keycloak.keycloak.svc.cluster.local:8080/realms/kuadrant
     response:
       success:
         headers:
@@ -726,21 +726,21 @@ EOF
 From the default (US) region:
 
 ```sh
-export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
+export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
 ```
 
 ```sh
-curl -k --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -H "Authorization: Bearer $ACCESS_TOKEN" https://echo.$MGC_ZONE_ROOT_DOMAIN -i
+curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i
 ```
 
 From the EU region:
 
 ```sh
-export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=jane' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
+export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=jane' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
 ```
 
 ```sh
-curl -k --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -H "Authorization: Bearer $ACCESS_TOKEN" https://echo.$MGC_ZONE_ROOT_DOMAIN -i
+curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i
 ```
 
 <br/>
