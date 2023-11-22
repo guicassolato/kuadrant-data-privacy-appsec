@@ -251,16 +251,6 @@ spec:
 EOF
 ```
 
-Patch Authorino so it knows the CA certificate of the N/S gateway:
-
-```sh
-kubectl --context kind-mgc-control-plane get secret/apps-hcpapps-tls -n kuadrant-multi-cluster-gateways -o jsonpath="{.data.ca\.crt}" | base64 -d > /tmp/apps-hcpapps.crt
-kubectl --context kind-mgc-control-plane create secret generic apps-hcpapps-tls -n kuadrant-system --from-file=/tmp/apps-hcpapps.crt
-kubectl --context kind-mgc-control-plane apply -n kuadrant-system -f -<<EOF
-$(kubectl --context kind-mgc-control-plane get authorino/authorino -n kuadrant-system -o json | jq -c '. * {"spec":{"volumes":{"items":[{"name":"apps-hcpapps-tls","mountPath":"/etc/ssl/certs","secrets":["apps-hcpapps-tls"],"items":[{"key":"apps-hcpapps.crt","path":"apps-hcpapps.crt"}]}],"defaultMode":420}}}')
-EOF
-```
-
 <br/>
 
 ### ❸ Setup E/W plumbing ⋅ 👷🏾‍♀️ Platform Engineer
@@ -649,16 +639,6 @@ spec:
 EOF
 ```
 
-Patch Authorino so it knows the CA certificate of the N/S gateway:
-
-```sh
-kubectl --context kind-mgc-workload-1 get secret/apps-hcpapps-tls -n kuadrant-multi-cluster-gateways -o jsonpath="{.data.ca\.crt}" | base64 -d > /tmp/apps-hcpapps.crt
-kubectl --context kind-mgc-workload-1 create secret generic apps-hcpapps-tls -n kuadrant-system --from-file=/tmp/apps-hcpapps.crt
-kubectl --context kind-mgc-workload-1 apply -n kuadrant-system -f -<<EOF
-$(kubectl --context kind-mgc-workload-1 get authorino/authorino -n kuadrant-system -o json | jq -c '. * {"spec":{"volumes":{"items":[{"name":"apps-hcpapps-tls","mountPath":"/etc/ssl/certs","secrets":["apps-hcpapps-tls"],"items":[{"key":"apps-hcpapps.crt","path":"apps-hcpapps.crt"}]}],"defaultMode":420}}}')
-EOF
-```
-
 Setup N/S authentication in the **kind-mgc-workload-1** cluster:
 
 ```sh
@@ -750,8 +730,4 @@ curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:
 ```sh
 kind delete cluster --name mgc-control-plane
 kind delete cluster --name mgc-workload-1
-```
-
-```sh
-rm -rf /tmp/mgc-control-plane.token
 ```
