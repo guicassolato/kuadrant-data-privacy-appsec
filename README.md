@@ -539,7 +539,7 @@ curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN -i
 Test the 2-layer authentication by sending another request to the application with a valid Kubernetes authentication token:
 
 ```sh
-export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
+export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token); echo $ACCESS_TOKEN
 ```
 
 ```sh
@@ -550,6 +550,13 @@ curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN -H "Authorization: Bearer $ACCESS_TOK
 # Host: echo.internal
 # Accept: */*
 # Authorization: Wristband […]
+```
+
+Inspect the tokens:
+
+```sh
+echo "-- N/S --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$ACCESS_TOKEN"
+echo "-- E/W --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$(curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN -H "Authorization: Bearer $ACCESS_TOKEN" -i -s | grep Wristband | awk '{print $3}')"
 ```
 
 <br/>
@@ -703,24 +710,38 @@ EOF
 
 ### ❼ Consume the service | 👩🏿‍💼 Client
 
-From the default (US) region:
+#### From the default (US) region
 
 ```sh
-export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
+export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=john' -d 'password=p' -d 'scope=openid' | jq -r .access_token); echo $ACCESS_TOKEN
 ```
 
 ```sh
 curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i
 ```
 
-From the EU region:
+Inspect the tokens:
 
 ```sh
-export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=jane' -d 'password=p' -d 'scope=openid' | jq -r .access_token)
+echo "-- N/S --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$ACCESS_TOKEN"
+echo "-- E/W --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$(curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.200.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i -s | grep Wristband | awk '{print $3}')"
+```
+
+#### From the EU region
+
+```sh
+export ACCESS_TOKEN=$(curl -k https://auth.$MGC_ZONE_ROOT_DOMAIN/realms/kuadrant/protocol/openid-connect/token --resolve auth.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -s -d 'grant_type=password' -d 'client_id=demo' -d 'username=jane' -d 'password=p' -d 'scope=openid' | jq -r .access_token); echo $ACCESS_TOKEN
 ```
 
 ```sh
 curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i
+```
+
+Inspect the tokens:
+
+```sh
+echo "-- N/S --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$ACCESS_TOKEN"
+echo "-- E/W --"; jq -R 'split(".") | .[1] | @base64d | fromjson' <<< "$(curl -k https://echo.$MGC_ZONE_ROOT_DOMAIN --resolve echo.$MGC_ZONE_ROOT_DOMAIN:443:172.31.201.0 -H "Authorization: Bearer $ACCESS_TOKEN" -i -s | grep Wristband | awk '{print $3}')"
 ```
 
 <br/>
