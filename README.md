@@ -299,10 +299,10 @@ spec:
 EOF
 ```
 
-Give DNS a couple of minutes to update. You should then be able to execute the following and get back the correct A record:
+Watch the changes to the DNS record. It may take a couple of minutes for the correct A record to propagate.
 
 ```sh
-dig echo.$MGC_ZONE_ROOT_DOMAIN
+watch -n 1 "dig echo.$MGC_ZONE_ROOT_DOMAIN"
 ```
 
 <br/>
@@ -610,10 +610,10 @@ spec:
 EOF
 ```
 
-Give DNS a couple of minutes to update. You should then be able to execute the following and get back the correct A record:
+Watch the changes to the DNS record. If you located in Europe, after a couple of minutes, you should see the new CNAME and A records updated.
 
 ```sh
-dig echo.$MGC_ZONE_ROOT_DOMAIN
+watch -n 1 "dig echo.$MGC_ZONE_ROOT_DOMAIN"
 ```
 
 Install Keycloak in the **kind-mgc-workload-1** cluster:
