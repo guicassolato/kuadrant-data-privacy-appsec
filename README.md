@@ -380,10 +380,10 @@ spec:
           issuerUrl: http://keycloak.keycloak.svc.cluster.local:8080/realms/kuadrant
     response:
       success:
-        headers:
-          authorization:
+        dynamicMetadata:
+          token:
             wristband:
-              issuer: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/authorization
+              issuer: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/token
               customClaims:
                 "scope":
                   selector: request.host
@@ -393,10 +393,10 @@ spec:
               signingKeyRefs:
               - name: wristband-signing-key
                 algorithm: ES256
-          append-prefix:
-            key: authorization
+        headers:
+          authorization:
             plain:
-              selector: "Wristband {auth.response.authorization}"
+              selector: "Wristband {auth.response.token}"
             priority: 1
           host:
             plain:
@@ -488,7 +488,7 @@ spec:
     authentication:
       "east-west":
         jwt:
-          issuerUrl: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/authorization
+          issuerUrl: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/token
         credentials:
           authorizationHeader:
             prefix: Wristband
@@ -687,10 +687,10 @@ spec:
           issuerUrl: http://keycloak.keycloak.svc.cluster.local:8080/realms/kuadrant
     response:
       success:
-        headers:
-          authorization:
+        dynamicMetadata:
+          token:
             wristband:
-              issuer: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/authorization
+              issuer: http://authorino-authorino-oidc.kuadrant-system.svc.cluster.local:8083/kuadrant-multi-cluster-gateways/ap-kuadrant-multi-cluster-gateways-north-south/token
               customClaims:
                 "scope":
                   selector: request.host
@@ -700,10 +700,10 @@ spec:
               signingKeyRefs:
               - name: wristband-signing-key
                 algorithm: ES256
-          append-prefix:
-            key: authorization
+        headers:
+          authorization:
             plain:
-              selector: "Wristband {auth.response.authorization}"
+              selector: "Wristband {auth.response.token}"
             priority: 1
           host:
             plain:
