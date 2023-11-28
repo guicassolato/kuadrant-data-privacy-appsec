@@ -412,11 +412,13 @@ EOF
 Deploy the application service onto the **kind-mgc-control-plane** cluster. The application attaches directly to the E/W gateway and indirectly to N/S:
 
 ```sh
+kubectl create namespace echo
 kubectl --context kind-mgc-control-plane apply -f - <<EOF
 apiVersion: apps/v1
 kind: Deployment
 metadata:
   name: echo
+  namespace: echo
 spec:
   replicas: 1
   selector:
@@ -439,6 +441,7 @@ apiVersion: v1
 kind: Service
 metadata:
   name: echo
+  namespace: echo
 spec:
   ports:
   - name: http-port
@@ -452,6 +455,7 @@ apiVersion: gateway.networking.k8s.io/v1beta1
 kind: HTTPRoute
 metadata:
   name: echo
+  namespace: echo
 spec:
   parentRefs:
   - kind: Gateway
@@ -474,6 +478,7 @@ apiVersion: kuadrant.io/v1beta2
 kind: AuthPolicy
 metadata:
   name: echo
+  namespace: echo
 spec:
   targetRef:
     group: gateway.networking.k8s.io
@@ -511,6 +516,7 @@ apiVersion: kuadrant.io/v1beta2
 kind: RateLimitPolicy
 metadata:
   name: echo
+  namespace: echo
 spec:
   targetRef:
     group: gateway.networking.k8s.io
