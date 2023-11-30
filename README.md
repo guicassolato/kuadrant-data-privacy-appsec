@@ -389,6 +389,8 @@ spec:
                   selector: request.host
                 "region":
                   value: us
+                "sub":
+                  selector: auth.identity.sub
               tokenDuration: 10
               signingKeyRefs:
               - name: wristband-signing-key
@@ -696,6 +698,8 @@ spec:
                   selector: request.host
                 "region":
                   value: eu
+                "sub":
+                  selector: auth.identity.sub
               tokenDuration: 10
               signingKeyRefs:
               - name: wristband-signing-key
